@@ -14,3 +14,4 @@ Dados utilizados
 Dados do Auxílio Brasil
 Fonte: Portal da Transparência
 Acesso em: https://www.portaltransparencia.gov.br/download-de-dados/auxilio-brasil
+Dicionário de dados: https://www.portaldatransparencia.gov.br/pagina-interna/605516-dicionario-de-dados-auxilio-brasil-saques
