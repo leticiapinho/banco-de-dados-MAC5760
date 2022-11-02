@@ -16,6 +16,3 @@ CREATE TABLE IF NOT EXISTS basics
 SELECT * FROM basics;
 
 COPY basics (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
-
-SELECT * FROM basics
-LIMIT 10;

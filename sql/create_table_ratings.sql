@@ -12,5 +12,3 @@ SELECT * FROM ratings;
 
 COPY ratings (tconst, averageRating, numVotes) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
 
-SELECT * FROM ratings
-LIMIT 10;
