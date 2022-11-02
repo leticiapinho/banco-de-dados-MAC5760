@@ -3,9 +3,9 @@ DROP TABLE IF EXISTS basics;
 CREATE TABLE IF NOT EXISTS basics
 (
 	tconst varchar(50),
-	titleType varchar(200),
-	primaryTitle varchar(200),
-	originalTitle varchar(200),
+	titleType varchar(1000),
+	primaryTitle varchar(1000),
+	originalTitle varchar(1000),
 	isAdult boolean,
 	startYear varchar,
 	endYear varchar,
@@ -15,8 +15,7 @@ CREATE TABLE IF NOT EXISTS basics
 
 SELECT * FROM basics;
 
-COPY basics (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres) FROM 'C:\Temp\basics.tsv' DELIMITER E'\t' CSV HEADER;
-
+COPY basics (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
 
 SELECT * FROM basics
 LIMIT 10;
