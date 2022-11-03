@@ -11,6 +11,6 @@ Acesso em: https://www.postgresql.org/
 
 Dados utilizados
 
-Dados do Auxílio Brasil
-Fonte: Portal da Transparência
-Acesso em: https://www.portaltransparencia.gov.br/download-de-dados/auxilio-brasil
+Dados do site IMDb
+Fonte: IMDb
+Acesso em: https://datasets.imdbws.com/
