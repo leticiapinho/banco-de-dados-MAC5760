@@ -10,8 +10,5 @@ CREATE TABLE IF NOT EXISTS ratings
 
 SELECT * FROM ratings;
 
-COPY ratings (tconst, averageRating, numVotes) FROM 'C:\Temp\ratings.tsv' DELIMITER E'\t' CSV HEADER;
+COPY ratings (tconst, averageRating, numVotes) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
 
-
-SELECT * FROM ratings
-LIMIT 10;
