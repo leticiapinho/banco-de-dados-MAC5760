@@ -9,9 +9,9 @@ SO: Windows x86-64
 Acesso em: https://www.postgresql.org/
 
 Modelagem do Banco:
-<iframe width="560" height="315" src='https://dbdiagram.io/embed/6365bd22c9abfc6111706e3a'> </iframe>
+https://dbdiagram.io/d/6365bd1ac9abfc6111706e38
 
-## Dados utilizados - Bases do site IMDb
+### Dados utilizados - Bases do site IMDb
 
 Data Location: The dataset files can be accessed and downloaded from https://datasets.imdbws.com/. The data is refreshed daily.
 
@@ -60,12 +60,12 @@ Each dataset is contained in a gzipped, tab-separated-values (TSV) formatted fil
 - job (string) - the specific job title if applicable, else '\N'
 - characters (string) - the name of the character played if applicable, else '\N'
 
-## title.ratings.tsv.gz – Contains the IMDb rating and votes information for titles
+#### title.ratings.tsv.gz – Contains the IMDb rating and votes information for titles
 - tconst (string) - alphanumeric unique identifier of the title
 - averageRating – weighted average of all the individual user ratings
 - numVotes - number of votes the title has received
 
-## name.basics.tsv.gz – Contains the following information for names:
+#### name.basics.tsv.gz – Contains the following information for names:
 - nconst (string) - alphanumeric unique identifier of the name/person
 - primaryName (string)– name by which the person is most often credited
 - birthYear – in YYYY format
