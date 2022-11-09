@@ -29,3 +29,4 @@ insert genre.tsv create_table_genre.sql
 insert genre_id.tsv create_table_genreID.sql
 insert directors.tsv create_table_directors.sql
 insert writers.tsv create_table_writers.sql
+insert title.principals.tsv create_table_titlePrincipals.sql

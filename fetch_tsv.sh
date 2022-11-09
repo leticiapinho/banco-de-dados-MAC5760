@@ -9,6 +9,8 @@ TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.ts
 [ $(uname) == Darwin ]
 IS_MAC=$?
 
+rm -f tsv/*
+
 for tsv_file in $TSV_FILES
 do
     pushd "$TSV_DIR" > /dev/null
@@ -19,10 +21,10 @@ do
     # replace invalid characters
     if [ $IS_MAC -eq 0 ]; then
         # mac os needs a '' after -i
-        sed -i '' -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
+        sed -i '' -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
     else
         # linux (and wsl) doesn't need it
-        sed -i -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
+        sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
     fi;
 
     popd > /dev/null
