@@ -4,7 +4,7 @@
 
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
-TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.tsv'
+TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.tsv name.basics.tsv'
 
 [ $(uname) == Darwin ]
 IS_MAC=$?
@@ -55,3 +55,20 @@ python3 py/extract_column.py \
         tsv/writers.tsv \
         tconst \
         writers
+
+# primary profession
+python3 py/extract_column_with_constants.py \
+        tsv/name.basics.tsv \
+        tsv/primary_profession.tsv \
+        tsv/primary_profession_id.tsv \
+        nconst \
+        primaryProfession \
+        idprof \
+        profession
+
+# known for titles
+python3 py/extract_column.py \
+        tsv/name.basics.tsv \
+        tsv/known_for_titles.tsv \
+        nconst \
+        knownForTitles

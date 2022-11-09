@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS primaryProfession
 (
-	idprof varchar(50) NOT NULL,
 	nconst varchar(50) NOT NULL,
-	PRIMARY KEY (idprof)
+	idprof varchar(50)
 );
 
-\copy primaryProfession (idprof, nconst) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy primaryProfession (nconst, idprof) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
