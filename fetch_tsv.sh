@@ -21,9 +21,19 @@ do
         # mac os needs a '' after -i
         sed -i '' -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
     else
-        # linux and wsl
+        # linux (and wsl) doesn't need it
         sed -i -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" $tsv_file
     fi;
 
     popd > /dev/null
 done
+
+# extract the arrays to new tsv files
+python3 py/extract_column_with_constants.py \
+        tsv/title.basics.tsv \
+        tsv/title_genres.tsv \
+        tsv/genres.tsv \
+        tconst \
+        genres \
+        idgen \
+        genre
