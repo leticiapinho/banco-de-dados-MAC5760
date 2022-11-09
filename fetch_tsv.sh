@@ -31,8 +31,8 @@ done
 # extract the arrays to new tsv files
 python3 py/extract_column_with_constants.py \
         tsv/title.basics.tsv \
-        tsv/title_genres.tsv \
-        tsv/genres.tsv \
+        tsv/genre.tsv \
+        tsv/genre_id.tsv \
         tconst \
         genres \
         idgen \
