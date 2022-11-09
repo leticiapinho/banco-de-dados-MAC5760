@@ -47,3 +47,9 @@ python3 py/extract_column.py \
         tconst \
         directors
 
+# writers
+python3 py/extract_column.py \
+        tsv/title.crew.tsv \
+        tsv/writers.tsv \
+        tconst \
+        writers

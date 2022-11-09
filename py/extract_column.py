@@ -6,8 +6,8 @@
 # input_file: o arquivo de onde queremos extrair a coluna
 # output_file: o arquivo para onde queremos extrair a coluna
 # key: nome da coluna que é a chave primária do arquivo input_file
-# extracted: nome da coluna que quermos extrair
-#
+# extracted: nome da coluna que queremos extrair
+# 
 # exemplo:
 #
 # python3 extract_column.py name.basics.tsv known_for_titles.tsv nconst knownForTitles
