@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS titleRatings
     PRIMARY KEY (tconst)
 );
 
-COPY titleRatings (tconst, averageRating, numVotes) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy titleRatings (tconst, averageRating, numVotes) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS writers
     PRIMARY KEY (tconst)
 );
 
-COPY writers (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;
+\copy writers (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;

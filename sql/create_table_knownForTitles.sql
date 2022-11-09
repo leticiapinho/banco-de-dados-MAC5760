@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS knownForTitles
 	PRIMARY KEY (nconst)
 );
 
-COPY knownForTitles (nconst, tconst) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy knownForTitles (nconst, tconst) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

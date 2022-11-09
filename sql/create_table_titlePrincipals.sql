@@ -9,4 +9,4 @@ CREATE TABLE IF NOT EXISTS titlePrincipals
 	PRIMARY KEY (tconst)
 );
 
-COPY titlePrincipals (tconst, ordering, nconst, category, job, characters) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy titlePrincipals (tconst, ordering, nconst, category, job, characters) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
