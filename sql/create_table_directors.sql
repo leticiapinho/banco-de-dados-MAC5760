@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS directors
     PRIMARY KEY (tconst)
 );
 
-COPY directors (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;
+\copy directors (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;

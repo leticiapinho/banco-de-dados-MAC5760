@@ -7,4 +7,4 @@ CREATE TABLE IF NOT EXISTS nameBasics
 	PRIMARY KEY (nconst) 
 );
 
-COPY nameBasics (nconst, primaryName, birthYears, deathYear) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy nameBasics (nconst, primaryName, birthYears, deathYear) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
