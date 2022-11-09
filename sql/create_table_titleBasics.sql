@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS titleBasics
 	startYear varchar,
 	endYear varchar,
 	runtimeMinutes numeric,
-        genres varchar(1000),
+    genres varchar(1000),
 	PRIMARY KEY (tconst)  
 );
 

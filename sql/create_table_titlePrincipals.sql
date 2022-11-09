@@ -6,7 +6,8 @@ CREATE TABLE IF NOT EXISTS titlePrincipals
 	category varchar,
     job varchar,
     characters varchar,
-	PRIMARY KEY (tconst)
+	PRIMARY KEY (tconst),
+	FOREIGN KEY (nconst) REFERENCES nameBasics(nconst)
 );
 
 \copy titlePrincipals (tconst, ordering, nconst, category, job, characters) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
