@@ -1,5 +1,34 @@
 #!/usr/bin/env python3
 
+# uso
+# python3 <input_file> <output_extracted_file> <output_id_file> <key> <extracted> <id_column> <name_column>
+#
+# input_file: o arquivo de onde queremos extrair a coluna
+# output_extracted_file: o arquivo para onde queremos extrair a coluna
+# output_id_file: o arquivo para onde será feito o mapeamento de id para nome
+# key: nome da coluna que é a chave primária do arquivo input_file
+# extracted: nome da coluna que quermos extrair do input_file
+# <id_column>: nome da coluna em no ouput_id_file que vai conter os ids únicos dos valores
+# <name_column>: nome da coluna em output_id_file que vai conter os valores
+#
+# exemplo:
+#
+# python3 extract_column_with_constants.py \
+#         title.basics.tsv \
+#         title_genres.tsv \
+#         genres.tsv \
+#         tconst \
+#         genres \
+#         idgen \
+#         genre
+#
+# Constrói o arquivo genres.tsv, mapeando um id para cada valor único na coluna
+# genres de title.basics.tsv.
+#
+# Também extrai a coluna genres de title.basics.tsv, cuja chave primaria é
+# tconst, e constroi o arquivo title_genres.tsv, mapeando o valores de tconst
+# para os ids correspondentes aos valores da coluna genres.
+
 from sys import argv
 
 FS='|'
@@ -42,8 +71,8 @@ for line in input_iterator:
 
     for value in (values.split(SEP) or ['']):
         if value != '':
-            types.setdefault(value, len(types))
-            output_extracted_file.write(f'{key}{OFS}{value}\n')
+            id_ = types.setdefault(value, len(types))
+            output_extracted_file.write(f'{key}{OFS}{id_}\n')
         else:
             output_extracted_file.write(f'{key}{OFS}\n')
 
