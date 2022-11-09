@@ -4,7 +4,7 @@
 
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
-TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv'
+TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.tsv'
 
 [ $(uname) == Darwin ]
 IS_MAC=$?
@@ -29,6 +29,8 @@ do
 done
 
 # extract the arrays to new tsv files
+
+# genre / genreID
 python3 py/extract_column_with_constants.py \
         tsv/title.basics.tsv \
         tsv/genre.tsv \
@@ -37,3 +39,11 @@ python3 py/extract_column_with_constants.py \
         genres \
         idgen \
         genre
+
+# directors
+python3 py/extract_column.py \
+        tsv/title.crew.tsv \
+        tsv/directors.tsv \
+        tconst \
+        directors
+

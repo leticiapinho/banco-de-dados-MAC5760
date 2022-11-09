@@ -13,18 +13,18 @@ function escape_path() {
     echo $path | sed "s/\//\\\\\//g"
 }
 
-FILE="$TSV_DIR/title.basics.tsv"
-ESCAPED_FILE=`escape_path $FILE`
-sed "s/SQL_FILE/$ESCAPED_FILE/" sql/create_table_titleBasics.sql | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+function insert() {
+    echo "Inserting $1"
 
-FILE="$TSV_DIR/title.ratings.tsv"
-ESCAPED_FILE=`escape_path $FILE`
-sed "s/SQL_FILE/$ESCAPED_FILE/" sql/create_table_titleRatings.sql | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+    FILE="$TSV_DIR/$1"
+    SQL="$SQL_DIR/$2"
 
-FILE="$TSV_DIR/genre.tsv"
-ESCAPED_FILE=`escape_path $FILE`
-sed "s/SQL_FILE/$ESCAPED_FILE/" sql/create_table_genre.sql | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+    ESCAPED_FILE=`escape_path $FILE`
+    sed "s/SQL_FILE/$ESCAPED_FILE/" $SQL | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+}
 
-FILE="$TSV_DIR/genre_id.tsv"
-ESCAPED_FILE=`escape_path $FILE`
-sed "s/SQL_FILE/$ESCAPED_FILE/" sql/create_table_genreID.sql | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+insert title.basics.tsv create_table_titleBasics.sql
+insert title.ratings.tsv create_table_titleRatings.sql
+insert genre.tsv create_table_genre.sql
+insert genre_id.tsv create_table_genreID.sql
+insert directors.tsv create_table_directors.sql
