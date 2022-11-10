@@ -5,4 +5,4 @@ CREATE TABLE IF NOT EXISTS primaryProfessionID
 	PRIMARY KEY (idprof)
 );
 
-\copy primaryProfession (idprof, profession) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+\copy primaryProfessionID (idprof, profession) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
