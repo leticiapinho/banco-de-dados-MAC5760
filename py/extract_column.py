@@ -44,7 +44,7 @@ for line in input_iterator:
     key = fields[key_column_i]
     values = fields[extracted_column_i]
 
-    for value in (values.split(SEP) or ['']):
+    for value in filter(None, values.split(SEP)):
         extracted_file.write(f'{key}{OFS}{value}\n')
 
 input_file.close()

@@ -69,12 +69,10 @@ for line in input_iterator:
     key = fields[key_column_i]
     values = fields[extracted_column_i]
 
-    for value in (values.split(SEP) or ['']):
+    for value in filter(None, values.split(SEP)):
         if value != '':
             id_ = types.setdefault(value, len(types))
             output_extracted_file.write(f'{key}{OFS}{id_}\n')
-        else:
-            output_extracted_file.write(f'{key}{OFS}\n')
 
 output_constant_file.write(f'{id_column}{OFS}{name_column}\n')
 
