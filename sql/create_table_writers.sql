@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS writers
     FOREIGN KEY (nconst) REFERENCES nameBasics(nconst)
 );
 
-\copy writers (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;
+\copy writers (tconst, nconst) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

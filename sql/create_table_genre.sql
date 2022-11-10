@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS genre
 (
     idgen varchar (50) NOT NULL,
-    tconst (50),
+    tconst varchar (50),
     PRIMARY KEY (idgen),
     FOREIGN KEY (tconst) REFERENCES titleBasics(tconst)
 );

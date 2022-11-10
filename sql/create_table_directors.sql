@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS directors
     FOREIGN KEY (nconst) REFERENCES nameBasics(nconst)
 );
 
-\copy directors (tconst, nconst) FROM 'SQL_FILE' DELIMITER E '|' CSV HEADER;
+\copy directors (tconst, nconst) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

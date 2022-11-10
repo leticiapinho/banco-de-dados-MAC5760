@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS titleBasics
 (
 	tconst varchar(50) NOT NULL,
 	titleType varchar(300),
-	primaryTitle varchar(500),
+ 	primaryTitle varchar(500),
 	originalTitle varchar(500),
 	isAdult boolean,
 	startYear varchar,
