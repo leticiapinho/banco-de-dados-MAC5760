@@ -23,6 +23,8 @@ function insert() {
     sed "s/SQL_FILE/$ESCAPED_FILE/" $SQL | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
 }
 
+psql -h localhost -U $POSTGRES_USER $POSTGRES_DB -f sql/clear.sql
+
 insert title.basics.tsv create_table_titleBasics.sql
 insert title.ratings.tsv create_table_titleRatings.sql
 insert title.principals.tsv create_table_titlePrincipals.sql
@@ -37,3 +39,5 @@ insert known_for_titles.tsv create_table_knownForTitles.sql
 
 insert primary_profession_id.tsv create_table_primaryProfessionID.sql
 insert primary_profession.tsv create_table_primaryProfession.sql
+
+psql -h localhost -U $POSTGRES_USER $POSTGRES_DB -f sql/add_foreign_key_constraints.sql
