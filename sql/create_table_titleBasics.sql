@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS titleBasics
 	endYear varchar,
 	runtimeMinutes numeric,
     genres varchar(1000),
-	PRIMARY KEY (tconst)  
+	PRIMARY KEY (tconst)
 );
 
 \copy titleBasics (tconst, titleType, primaryTitle, originalTitle, isAdult, startYear, endYear, runtimeMinutes, genres) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

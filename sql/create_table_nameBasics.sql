@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS nameBasics
 	deathYear varchar,
         primaryProfession varchar(100),
         knownForTitles varchar(100),
-	PRIMARY KEY (nconst) 
+	PRIMARY KEY (nconst)
 );
 
 \copy nameBasics (nconst, primaryName, birthYear, deathYear, primaryProfession, knownForTitles) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

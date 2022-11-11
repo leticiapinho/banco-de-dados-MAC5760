@@ -2,25 +2,25 @@
 
 # run this as root, i. e. sudo ./populate.sh
 
-TSV_DIR=$PWD/tsv
-SQL_DIR=$PWD/sql
+TSV_DIR="${PWD}/tsv"
+SQL_DIR="${PWD}/sql"
 
 POSTGRES_USER='postgres'
 POSTGRES_DB='postgres'
 
 function escape_path() {
     path=$1
-    echo $path | sed "s/\//\\\\\//g"
+    echo "$path" | sed "s/\//\\\\\//g"
 }
 
 function insert() {
     echo "Inserting $1"
 
-    FILE="$TSV_DIR/$1"
-    SQL="$SQL_DIR/$2"
+    FILE="${TSV_DIR}/$1"
+    SQL="${SQL_DIR}/$2"
 
-    ESCAPED_FILE=`escape_path $FILE`
-    sed "s/SQL_FILE/$ESCAPED_FILE/" $SQL | psql -h localhost -U $POSTGRES_USER $POSTGRES_DB
+    ESCAPED_FILE=$(escape_path "$FILE")
+    sed "s/SQL_FILE/${ESCAPED_FILE}/" "$SQL" | psql -h localhost -U "$POSTGRES_USER" "$POSTGRES_DB"
 }
 
 psql -h localhost -U $POSTGRES_USER $POSTGRES_DB -f sql/clear.sql
