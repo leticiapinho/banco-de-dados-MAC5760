@@ -7,7 +7,7 @@
 # output_file: o arquivo para onde queremos extrair a coluna
 # key: nome da coluna que é a chave primária do arquivo input_file
 # extracted: nome da coluna que queremos extrair
-# 
+#
 # exemplo:
 #
 # python3 extract_column.py name.basics.tsv known_for_titles.tsv nconst knownForTitles
@@ -18,6 +18,7 @@
 
 
 from sys import argv
+import re
 
 FS='|'
 OFS='|'
@@ -45,7 +46,8 @@ for line in input_iterator:
     values = fields[extracted_column_i]
 
     for value in filter(None, values.split(SEP)):
-        extracted_file.write(f'{key}{OFS}{value}\n')
+        if key is not 'knownForTitles' or re.search(r'tt2[0-9]{7}', value):
+            extracted_file.write(f'{key}{OFS}{value}\n')
 
 input_file.close()
 extracted_file.close()
