@@ -5,7 +5,10 @@ CREATE TABLE IF NOT EXISTS titlePrincipals
 	nconst varchar(50),
 	category varchar,
         job varchar,
-        characters varchar
+        characters varchar,
+	PRIMARY KEY (tconst)
 );
 
 \copy titlePrincipals (tconst, ordering, nconst, category, job, characters) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+
+DELETE FROM titlePrincipals WHERE nconst NOT IN (SELECT nconst FROM nameBasics);

@@ -1,7 +1,10 @@
 CREATE TABLE IF NOT EXISTS genre
 (
     idgen varchar (50) NOT NULL,
-    tconst varchar (50)
+    tconst varchar (50),
+    PRIMARY KEY (idgen)
 );
 
 \copy genre (idgen, tconst)  FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+
+DELETE FROM genre WHERE tconst NOT IN (SELECT tconst FROM titleBasics);

@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS titleRatings
 );
 
 \copy titleRatings (tconst, averageRating, numVotes) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
+
+DELETE FROM titleRatings WHERE tconst NOT IN (SELECT tconst FROM titleBasics);
