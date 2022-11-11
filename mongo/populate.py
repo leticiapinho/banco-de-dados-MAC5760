@@ -38,11 +38,22 @@ with open(path.join(tsv_path, 'title.basics.tsv')) as f:
     next(file_iter)
 
     title_basics = db['title_basics']
+    start_year = db['start_year']
+
+    start_year.insert_many(
+        {
+            '_id': y,
+            'movies': []
+        }
+        for y in range(1890, 2030)
+    )
 
     for chunk in chunks(file_iter, BUF_SIZE):
-        payloads = [
+        chunk_registers = map(lambda x: x.split('|'), chunk)
+
+        payload_title_basics = [
             {
-                'tconst': tconst,
+                '_id': tconst,
                 'title_type': title_type,
                 'primary_title': primary_title,
                 'original_title': original_title,
@@ -52,7 +63,7 @@ with open(path.join(tsv_path, 'title.basics.tsv')) as f:
                 'runtime_minutes': int(runtime_minutes or 0),
                 'genres': genres.strip().split(',')
             }
-            
+
             for (
                     tconst,
                     title_type,
@@ -63,7 +74,22 @@ with open(path.join(tsv_path, 'title.basics.tsv')) as f:
                     end_year,
                     runtime_minutes,
                     genres
-            ) in map(lambda x: x.split('|'), chunk)
+            ) in chunk_registers
         ]
 
-        title_basics.insert_many(payloads)
+        title_basics.insert_many(payload_title_basics)
+
+        start_years_lists = dict()
+
+        for title in payload_title_basics:
+            year = title['start_year']
+            tconst = title['_id']
+
+            start_years_lists[year] = start_years_lists.get(year, [])
+            start_years_lists[year].append(tconst)
+
+        for year, movies in start_years_lists.items():
+            start_year.update_one(
+                {'_id': year},
+                {'$push': {'movies': {'$each': movies}}}
+            )
