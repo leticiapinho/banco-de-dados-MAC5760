@@ -35,7 +35,7 @@ python3 py/sample_keys.py 93 < tsv/title.basics.tsv > tsv/tconst.tsv
 python3 py/sample_keys.py 120 < tsv/name.basics.tsv > tsv/nconst.tsv
 
 tmp_file=$(mktemp)
-for tsv_file in title.basics.tsv title.ratings.tsv title.principals.tsv
+for tsv_file in title.basics.tsv title.ratings.tsv
 do
     echo "reducing $tsv_file"
     python3 py/fix_keys.py tsv/tconst.tsv tconst < "$TSV_DIR/$tsv_file" > $tmp_file
@@ -45,6 +45,11 @@ done
 echo "reducing name.basics.tsv"
 python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/name.basics.tsv" > $tmp_file
 cp $tmp_file "$TSV_DIR/name.basics.tsv"
+
+echo "reducing title.principals.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/title.principals.tsv" | python3 py/fix_keys.py tsv/tconst.tsv tconst > $tmp_file
+cp $tmp_file "$TSV_DIR/title.principals.tsv"
+
 
 # extract the arrays to new tsv files
 
