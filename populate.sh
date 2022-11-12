@@ -38,5 +38,3 @@ insert known_for_titles.tsv create_table_knownForTitles.sql
 
 insert primary_profession_id.tsv create_table_primaryProfessionID.sql
 insert primary_profession.tsv create_table_primaryProfession.sql
-
-psql -h localhost -U $POSTGRES_USER $POSTGRES_DB -f sql/add_foreign_key_constraints.sql

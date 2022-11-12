@@ -5,7 +5,6 @@
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
 TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv name.basics.tsv'
-TCONST_REGEX='tt2[0-9]{7}'
 
 [ "$(uname)" == Darwin ]
 IS_MAC=$?
@@ -16,30 +15,41 @@ pushd "$TSV_DIR" > /dev/null || exit
 for tsv_file in $TSV_FILES
 do
     echo "downloading $tsv_file"
-    wget "${BASE_URL}${tsv_file}.gz" -O "temp_file.tsv.gz"
-    yes | gzip -d temp_file.tsv.gz
+    wget "${BASE_URL}${tsv_file}.gz" -O "${tsv_file}.gz"
+    yes | gzip -d "${tsv_file}.gz"
 
     # replace invalid characters
     if [ "$IS_MAC" -eq 0 ]; then
         # mac os needs a '' after -i
-        sed -i '' -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" temp_file.tsv
+        sed -i '' -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" "$tsv_file"
     else
         # linux (and wsl) doesn't need it
-        sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" temp_file.tsv
+        sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" "$tsv_file"
     fi;
 
-    first_line="$(head -n1 temp_file.tsv)"
-
-    echo "$first_line" > "$tsv_file"
-
-    if [[ "$first_line" =~ ^tconst ]]; then
-        grep -E "^${TCONST_REGEX}\|.*$" temp_file.tsv >> "$tsv_file"
-        rm temp_file.tsv
-    else
-        mv temp_file.tsv "$tsv_file"
-    fi
 done
 popd > /dev/null || exit
+
+# take a sample of the database
+python3 py/sample_keys.py 9 < tsv/title.basics.tsv > tsv/tconst.tsv
+python3 py/sample_keys.py 12 < tsv/name.basics.tsv > tsv/nconst.tsv
+
+tmp_file=$(mktemp)
+for tsv_file in title.basics.tsv title.ratings.tsv
+do
+    echo "reducing $tsv_file"
+    python3 py/fix_keys.py tsv/tconst.tsv tconst < "$TSV_DIR/$tsv_file" > $tmp_file
+    cp $tmp_file "$TSV_DIR/$tsv_file"
+done
+
+echo "reducing name.basics.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/name.basics.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/name.basics.tsv"
+
+echo "reducing title.principals.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/title.principals.tsv" | python3 py/fix_keys.py tsv/tconst.tsv tconst > $tmp_file
+cp $tmp_file "$TSV_DIR/title.principals.tsv"
+
 
 # extract the arrays to new tsv files
 
@@ -69,3 +79,19 @@ python3 py/extract_column.py \
         tsv/known_for_titles.tsv \
         nconst \
         knownForTitles
+
+# remove inconsistent registers
+
+echo "reducing genre.tsv"
+python3 py/fix_keys.py tsv/tconst.tsv tconst < "$TSV_DIR/genre.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/genre.tsv"
+
+echo "reducing primary_profession.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/primary_profession.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/primary_profession.tsv"
+
+echo "reducing known_for_titles.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/known_for_titles.tsv" | python3 py/fix_keys.py tsv/tconst.tsv knownForTitles > $tmp_file
+cp $tmp_file "$TSV_DIR/known_for_titles.tsv"
+
+rm $tmp_file

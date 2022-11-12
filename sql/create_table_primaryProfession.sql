@@ -1,9 +1,8 @@
 CREATE TABLE IF NOT EXISTS primaryProfession
 (
 	nconst varchar(50) NOT NULL,
-        idprof varchar(50) NOT NULL
+        idprof varchar(50) NOT NULL,
+	FOREIGN KEY (nconst) REFERENCES nameBasics(nconst)
 );
 
 \copy primaryProfession (nconst, idprof) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;
-
-DELETE FROM primaryProfession WHERE nconst NOT IN (SELECT nconst FROM nameBasics);
