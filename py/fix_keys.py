@@ -3,20 +3,12 @@
 from sys import argv
 from os import path
 
-_, tsv_dir, column, *__ = argv
+_, key_file, column, *__ = argv
 
 valid_pks = None
 
-with open(path.join(tsv_dir, 'title.basics.tsv')) as f:
-    it = iter(f)
-    columns = next(it).strip().split('|')
-
-    idx = columns.index(column)
-
-    valid_pks = {
-        reg[idx]
-        for reg in map(lambda x: x.split('|'), it)
-    }
+with open(key_file) as f:
+    valid_pks = {line.strip() for line in f}
 
 fst_line = input().strip()
 columns = fst_line.split('|')
