@@ -35,6 +35,7 @@ def chunks(iterator, size):
     if buf: yield buf
 
 def insert_title_basics():
+    print('title_basics')
     with open(path.join(tsv_path, 'title.basics.tsv')) as f:
         file_iter = iter(f)
         next(file_iter)
@@ -116,6 +117,7 @@ def insert_title_basics():
             del chunk_registers
 
 def insert_name_basics():
+    print('name_basics')
     with open(path.join(tsv_path, 'name.basics.tsv')) as f:
         file_iter = iter(f)
         next(file_iter)
@@ -183,6 +185,7 @@ def insert_name_basics():
             del chunk_registers
 
 def insert_title_ratings():
+    print('title_ratings')
     with open(path.join(tsv_path, 'title.ratings.tsv')) as f:
         file_iter = iter(f)
         next(file_iter)
@@ -214,6 +217,7 @@ def insert_title_ratings():
             title_basics.bulk_write(payload_title_ratings)
 
 def insert_title_principals():
+    print('title_principals')
     with open(path.join(tsv_path, 'title.principals.tsv')) as f:
         file_iter = iter(f)
         next(file_iter)

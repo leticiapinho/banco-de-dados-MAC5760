@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS directors;
-DROP TABLE IF EXISTS writers;
 DROP TABLE IF EXISTS knownForTitles;
 
 DROP TABLE IF EXISTS genre;

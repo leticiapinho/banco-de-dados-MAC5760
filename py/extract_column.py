@@ -46,7 +46,7 @@ for line in input_iterator:
     values = fields[extracted_column_i]
 
     for value in filter(None, values.split(SEP)):
-        if key is not 'knownForTitles' or re.search(r'tt2[0-9]{7}', value):
+        if key != 'knownForTitles' or re.search(r'tt2[0-9]{7}', value):
             extracted_file.write(f'{key}{OFS}{value}\n')
 
 input_file.close()

@@ -4,7 +4,7 @@
 
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
-TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.tsv name.basics.tsv'
+TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv name.basics.tsv'
 TCONST_REGEX='tt2[0-9]{7}'
 
 [ "$(uname)" == Darwin ]
@@ -17,7 +17,7 @@ for tsv_file in $TSV_FILES
 do
     echo "downloading $tsv_file"
     wget "${BASE_URL}${tsv_file}.gz" -O "temp_file.tsv.gz"
-    gzip -d temp_file.tsv.gz
+    yes | gzip -d temp_file.tsv.gz
 
     # replace invalid characters
     if [ "$IS_MAC" -eq 0 ]; then
@@ -34,8 +34,9 @@ do
 
     if [[ "$first_line" =~ ^tconst ]]; then
         grep -E "^${TCONST_REGEX}\|.*$" temp_file.tsv >> "$tsv_file"
+        rm temp_file.tsv
     else
-        cat temp_file.tsv >> "$tsv_file"
+        mv temp_file.tsv "$tsv_file"
     fi
 done
 popd > /dev/null || exit
@@ -51,20 +52,6 @@ python3 py/extract_column_with_constants.py \
         genres \
         idgen \
         genre
-
-# directors
-python3 py/extract_column.py \
-        tsv/title.crew.tsv \
-        tsv/directors.tsv \
-        tconst \
-        directors
-
-# writers
-python3 py/extract_column.py \
-        tsv/title.crew.tsv \
-        tsv/writers.tsv \
-        tconst \
-        writers
 
 # primary profession
 python3 py/extract_column_with_constants.py \
