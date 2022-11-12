@@ -33,38 +33,43 @@ def chunks(iterator, size):
     buf = [*filter(None, buf)]
     if buf: yield buf
 
-with open(path.join(tsv_path, 'title.basics.tsv')) as f:
-    file_iter = iter(f)
-    next(file_iter)
+def insert_title_basics():
+    with open(path.join(tsv_path, 'title.basics.tsv')) as f:
+        file_iter = iter(f)
+        next(file_iter)
 
-    title_basics = db['title_basics']
-    start_year = db['start_year']
+        title_basics = db['title_basics']
+        start_year = db['start_year']
 
-    start_year.insert_many(
-        {
-            '_id': y,
-            'movies': []
-        }
-        for y in range(1890, 2030)
-    )
+        title_basics.delete_many({})
+        start_year.delete_many({})
 
-    for chunk in chunks(file_iter, BUF_SIZE):
-        chunk_registers = map(lambda x: x.split('|'), chunk)
-
-        payload_title_basics = [
+        start_year.insert_many(
             {
-                '_id': tconst,
-                'title_type': title_type,
-                'primary_title': primary_title,
-                'original_title': original_title,
-                'is_adult': bool(is_adult == '1'),
-                'start_year': int(start_year or 0),
-                'end_year': int(end_year or 0),
-                'runtime_minutes': int(runtime_minutes or 0),
-                'genres': genres.strip().split(',')
+                '_id': y,
+                'movies': []
             }
+            for y in range(1890, 2030)
+        )
 
-            for (
+        for chunk in chunks(file_iter, BUF_SIZE):
+            chunk_registers = map(lambda x: x.split('|'), chunk)
+
+            payload_title_basics = [
+                {
+                    '_id': tconst,
+                    'title_type': title_type,
+                    'primary_title': primary_title,
+                    'original_title': original_title,
+                    'is_adult': bool(is_adult == '1'),
+                    'start_year': int(start_year or 0),
+                    'end_year': int(end_year or 0),
+                    'runtime_minutes': int(runtime_minutes or 0),
+                    'genres': genres.strip().split(',')
+                }
+
+                for
+                (
                     tconst,
                     title_type,
                     primary_title,
@@ -74,22 +79,92 @@ with open(path.join(tsv_path, 'title.basics.tsv')) as f:
                     end_year,
                     runtime_minutes,
                     genres
-            ) in chunk_registers
-        ]
+                ) in chunk_registers
+            ]
 
-        title_basics.insert_many(payload_title_basics)
+            title_basics.insert_many(payload_title_basics)
 
-        start_years_lists = dict()
+            start_years_lists = dict()
 
-        for title in payload_title_basics:
-            year = title['start_year']
-            tconst = title['_id']
+            for title in payload_title_basics:
+                year = title['start_year']
+                tconst = title['_id']
 
-            start_years_lists[year] = start_years_lists.get(year, [])
-            start_years_lists[year].append(tconst)
+                start_years_lists[year] = start_years_lists.get(year, [])
+                start_years_lists[year].append(tconst)
 
-        for year, movies in start_years_lists.items():
-            start_year.update_one(
-                {'_id': year},
-                {'$push': {'movies': {'$each': movies}}}
-            )
+            for year, movies in start_years_lists.items():
+                start_year.update_one(
+                    {'_id': year},
+                    {'$push': {'movies': {'$each': movies}}}
+                )
+
+            del payload_title_basics
+            del start_years_lists
+            del chunk_registers
+
+def insert_name_basics():
+    with open(path.join(tsv_path, 'name.basics.tsv')) as f:
+        file_iter = iter(f)
+        next(file_iter)
+
+        name_basics = db['name_basics']
+        birth_year = db['birth_year']
+
+        name_basics.delete_many({})
+        birth_year.delete_many({})
+
+        birth_year.insert_many(
+            {
+                '_id': y,
+                'persons': []
+            }
+            for y in range(1800, 2030)
+        )
+
+        for chunk in chunks(file_iter, BUF_SIZE):
+            chunk_registers = map(lambda x: x.split('|'), chunk)
+
+            payload_name_basics = [
+                {
+                    '_id': nconst,
+                    'primary_name': primary_name,
+                    'birth_year': birth_year and int(birth_year),
+                    'death_year': death_year and int(death_year),
+                    'primary_profession': primary_profession.strip().split(','),
+                    'known_for_titles': known_for_titles.strip().split(',')
+                }
+                for
+                (
+                    nconst,
+                    primary_name,
+                    birth_year,
+                    death_year,
+                    primary_profession,
+                    known_for_titles
+                ) in chunk_registers
+            ]
+
+            name_basics.insert_many(payload_name_basics)
+
+            birth_years_lists = dict()
+
+            for person in payload_name_basics:
+                birth = person['birth_year']
+                nconst = person['_id']
+
+                birth_years_lists[birth] = birth_years_lists.get(birth, [])
+                birth_years_lists[birth].append(nconst)
+
+            for year, persons in birth_years_lists.items():
+                birth_year.update_one(
+                    {'_id': year},
+                    {'$push': {'persons': {'$each': persons}}}
+                )
+
+            del payload_name_basics
+            del birth_years_lists
+            del chunk_registers
+
+if __name__ == '__main__':
+    insert_name_basics()
