@@ -5,41 +5,30 @@
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
 TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv name.basics.tsv'
-TCONST_REGEX='tt2[0-9]{7}'
 
 [ "$(uname)" == Darwin ]
 IS_MAC=$?
 
 rm -f tsv/*
 
-pushd "$TSV_DIR" > /dev/null || exit
 for tsv_file in $TSV_FILES
 do
+    pushd "$TSV_DIR" > /dev/null || exit
     echo "downloading $tsv_file"
-    wget "${BASE_URL}${tsv_file}.gz" -O "temp_file.tsv.gz"
-    yes | gzip -d temp_file.tsv.gz
+    wget "${BASE_URL}${tsv_file}.gz" -O "${tsv_file}.gz"
+    yes | gzip -d "${tsv_file}.gz"
 
     # replace invalid characters
     if [ "$IS_MAC" -eq 0 ]; then
         # mac os needs a '' after -i
-        sed -i '' -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" temp_file.tsv
+        sed -i '' -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" "$tsv_file"
     else
         # linux (and wsl) doesn't need it
-        sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" temp_file.tsv
+        sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" "$tsv_file"
     fi;
 
-    first_line="$(head -n1 temp_file.tsv)"
-
-    echo "$first_line" > "$tsv_file"
-
-    if [[ "$first_line" =~ ^tconst ]]; then
-        grep -E "^${TCONST_REGEX}\|.*$" temp_file.tsv >> "$tsv_file"
-        rm temp_file.tsv
-    else
-        mv temp_file.tsv "$tsv_file"
-    fi
+    popd > /dev/null || exit
 done
-popd > /dev/null || exit
 
 # extract the arrays to new tsv files
 
