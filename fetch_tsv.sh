@@ -31,8 +31,8 @@ done
 popd > /dev/null || exit
 
 # take a sample of the database
-python3 py/sample_keys.py 93 < tsv/title.basics.tsv > tsv/tconst.tsv
-python3 py/sample_keys.py 120 < tsv/name.basics.tsv > tsv/nconst.tsv
+python3 py/sample_keys.py 9 < tsv/title.basics.tsv > tsv/tconst.tsv
+python3 py/sample_keys.py 12 < tsv/name.basics.tsv > tsv/nconst.tsv
 
 tmp_file=$(mktemp)
 for tsv_file in title.basics.tsv title.ratings.tsv
