@@ -26,15 +26,14 @@ function insert() {
 psql -h localhost -U $POSTGRES_USER $POSTGRES_DB -f sql/clear.sql
 
 insert title.basics.tsv create_table_titleBasics.sql
+insert name.basics.tsv create_table_nameBasics.sql
+
 insert title.ratings.tsv create_table_titleRatings.sql
 insert title.principals.tsv create_table_titlePrincipals.sql
-insert name.basics.tsv create_table_nameBasics.sql
 
 insert genre_id.tsv create_table_genreID.sql
 insert genre.tsv create_table_genre.sql
 
-insert directors.tsv create_table_directors.sql
-insert writers.tsv create_table_writers.sql
 insert known_for_titles.tsv create_table_knownForTitles.sql
 
 insert primary_profession_id.tsv create_table_primaryProfessionID.sql

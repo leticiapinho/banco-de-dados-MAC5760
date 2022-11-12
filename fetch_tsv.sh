@@ -17,7 +17,7 @@ for tsv_file in $TSV_FILES
 do
     echo "downloading $tsv_file"
     wget "${BASE_URL}${tsv_file}.gz" -O "temp_file.tsv.gz"
-    gzip -d temp_file.tsv.gz
+    yes | gzip -d temp_file.tsv.gz
 
     # replace invalid characters
     if [ "$IS_MAC" -eq 0 ]; then
@@ -34,8 +34,9 @@ do
 
     if [[ "$first_line" =~ ^tconst ]]; then
         grep -E "^${TCONST_REGEX}\|.*$" temp_file.tsv >> "$tsv_file"
+        rm temp_file.tsv
     else
-        cat temp_file.tsv >> "$tsv_file"
+        mv temp_file.tsv "$tsv_file"
     fi
 done
 popd > /dev/null || exit
