@@ -11,9 +11,9 @@ IS_MAC=$?
 
 rm -f tsv/*
 
+pushd "$TSV_DIR" > /dev/null || exit
 for tsv_file in $TSV_FILES
 do
-    pushd "$TSV_DIR" > /dev/null || exit
     echo "downloading $tsv_file"
     wget "${BASE_URL}${tsv_file}.gz" -O "${tsv_file}.gz"
     yes | gzip -d "${tsv_file}.gz"
@@ -27,8 +27,24 @@ do
         sed -i -e "s/|/_/g" -e "s/\\\\N//g" -e 's/\t/|/g' -e "s/\"//g" "$tsv_file"
     fi;
 
-    popd > /dev/null || exit
 done
+popd > /dev/null || exit
+
+# take a sample of the database
+python3 py/sample_keys.py 93 < tsv/title.basics.tsv > tsv/tconst.tsv
+python3 py/sample_keys.py 120 < tsv/name.basics.tsv > tsv/nconst.tsv
+
+tmp_file=$(mktemp)
+for tsv_file in title.basics.tsv title.ratings.tsv title.principals.tsv
+do
+    echo "reducing $tsv_file"
+    python3 py/fix_keys.py tsv/tconst.tsv tconst < "$TSV_DIR/$tsv_file" > $tmp_file
+    cp $tmp_file "$TSV_DIR/$tsv_file"
+done
+
+echo "reducing name.basics.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/name.basics.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/name.basics.tsv"
 
 # extract the arrays to new tsv files
 
@@ -58,3 +74,19 @@ python3 py/extract_column.py \
         tsv/known_for_titles.tsv \
         nconst \
         knownForTitles
+
+# remove inconsistent registers
+
+echo "reducing genre.tsv"
+python3 py/fix_keys.py tsv/tconst.tsv tconst < "$TSV_DIR/genre.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/genre.tsv"
+
+echo "reducing primary_profession.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/primary_profession.tsv" > $tmp_file
+cp $tmp_file "$TSV_DIR/primary_profession.tsv"
+
+echo "reducing known_for_titles.tsv"
+python3 py/fix_keys.py tsv/nconst.tsv nconst < "$TSV_DIR/known_for_titles.tsv" | python3 py/fix_keys.py tsv/tconst.tsv knownForTitles > $tmp_file
+cp $tmp_file "$TSV_DIR/known_for_titles.tsv"
+
+rm $tmp_file
