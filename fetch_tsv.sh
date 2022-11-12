@@ -4,7 +4,7 @@
 
 TSV_DIR="$PWD/tsv"
 BASE_URL="https://datasets.imdbws.com/"
-TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv title.crew.tsv name.basics.tsv'
+TSV_FILES='title.basics.tsv title.ratings.tsv title.principals.tsv name.basics.tsv'
 TCONST_REGEX='tt2[0-9]{7}'
 
 [ "$(uname)" == Darwin ]
@@ -51,20 +51,6 @@ python3 py/extract_column_with_constants.py \
         genres \
         idgen \
         genre
-
-# directors
-python3 py/extract_column.py \
-        tsv/title.crew.tsv \
-        tsv/directors.tsv \
-        tconst \
-        directors
-
-# writers
-python3 py/extract_column.py \
-        tsv/title.crew.tsv \
-        tsv/writers.tsv \
-        tconst \
-        writers
 
 # primary profession
 python3 py/extract_column_with_constants.py \
