@@ -4,7 +4,7 @@ import pymongo
 
 from sys import argv
 from os import path
-from pymongo import MongoClient
+from pymongo import MongoClient, UpdateOne
 from pprint import pprint
 from itertools import count
 
@@ -93,6 +93,16 @@ def insert_title_basics():
                 start_years_lists[year] = start_years_lists.get(year, [])
                 start_years_lists[year].append(tconst)
 
+            payload_start_year = [
+                UpdateOne(
+                    {'_id': year},
+                    {'$push': {'movies': {'$each': movies}}}
+                )
+                for year, movies in start_years_lists.items()
+            ]
+
+            start_year.bulk_write(payload_start_year)
+
             for year, movies in start_years_lists.items():
                 start_year.update_one(
                     {'_id': year},
@@ -156,15 +166,19 @@ def insert_name_basics():
                 birth_years_lists[birth] = birth_years_lists.get(birth, [])
                 birth_years_lists[birth].append(nconst)
 
-            for year, persons in birth_years_lists.items():
-                birth_year.update_one(
+            payload_birth_year = [
+                UpdateOne(
                     {'_id': year},
                     {'$push': {'persons': {'$each': persons}}}
                 )
+                for year, persons in birth_years_lists.items()
+            ]
+
+            birth_year.bulk_write(payload_birth_year)
 
             del payload_name_basics
             del birth_years_lists
             del chunk_registers
 
 if __name__ == '__main__':
-    insert_name_basics()
+    insert_title_basics()
