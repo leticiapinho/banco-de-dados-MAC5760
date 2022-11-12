@@ -7,6 +7,7 @@ from os import path
 from pymongo import MongoClient, UpdateOne
 from pprint import pprint
 from itertools import count
+import json
 
 MONGO_HOST = 'localhost'
 MONGO_PORT = 27017
@@ -65,7 +66,8 @@ def insert_title_basics():
                     'start_year': int(start_year or 0),
                     'end_year': int(end_year or 0),
                     'runtime_minutes': int(runtime_minutes or 0),
-                    'genres': genres.strip().split(',')
+                    'genres': genres.strip().split(','),
+                    'principals': []
                 }
 
                 for
@@ -180,5 +182,72 @@ def insert_name_basics():
             del birth_years_lists
             del chunk_registers
 
+def insert_title_ratings():
+    with open(path.join(tsv_path, 'title.ratings.tsv')) as f:
+        file_iter = iter(f)
+        next(file_iter)
+
+        title_basics = db['title_basics']
+
+        for chunk in chunks(file_iter, BUF_SIZE):
+            chunk_registers = map(lambda x: x.split('|'), chunk)
+
+            payload_title_ratings = [
+                UpdateOne(
+                    {
+                        '_id': tconst
+                    },
+                    {
+                        '$set':
+                        {
+                            'ratings':
+                            {
+                                'averate_rating': average_rating and float(average_rating),
+                                'num_votes': num_votes and int(num_votes)
+                            }
+                        }
+                    }
+                )
+                for tconst, average_rating, num_votes in chunk_registers
+            ]
+
+            title_basics.bulk_write(payload_title_ratings)
+
+def insert_title_principals():
+    with open(path.join(tsv_path, 'title.principals.tsv')) as f:
+        file_iter = iter(f)
+        next(file_iter)
+
+        title_basics = db['title_basics']
+
+        for chunk in chunks(file_iter, BUF_SIZE):
+            chunk_registers = map(lambda x: x.split('|'), chunk)
+
+            payload_title_principals = [
+                UpdateOne(
+                    {
+                        '_id': tconst
+                    },
+                    {
+                        '$push': {
+                            'principals': {
+                                'nconst': nconst,
+                                'category': category,
+                                'job': job,
+                                'characters': characters.strip().replace('[', '').replace(']', '')
+                            }
+                        }
+                    }
+                )
+
+                for tconst, _, nconst, category, job, characters in chunk_registers
+            ]
+
+            title_basics.bulk_write(payload_title_principals)
+
+
 if __name__ == '__main__':
     insert_title_basics()
+    insert_name_basics()
+    insert_title_ratings()
+    insert_title_principals()
