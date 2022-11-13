@@ -106,12 +106,6 @@ def insert_title_basics():
 
             start_year.bulk_write(payload_start_year)
 
-            for year, movies in start_years_lists.items():
-                start_year.update_one(
-                    {'_id': year},
-                    {'$push': {'movies': {'$each': movies}}}
-                )
-
             del payload_title_basics
             del start_years_lists
             del chunk_registers
