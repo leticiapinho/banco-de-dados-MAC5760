@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pymongo import MongoClient, UpdateOne
+from pymongo import MongoClient, UpdateOne, DeleteOne
 from time import time
 from random import seed, randint, sample
 from itertools import permutations
@@ -14,6 +14,7 @@ BUF_SIZE = 32768
 client = MongoClient(MONGO_HOST, MONGO_PORT)
 db = client[MONGO_DB]
 title_basics = db['title_basics']
+name_basics = db['name_basics']
 start_year = db['start_year']
 birth_year = db['birth_year']
 
@@ -99,5 +100,67 @@ def insert_1000_movies():
 
     return start, finish
 
+def remove_before_1950_actors():
+    birth_year_aggregate = [
+        {
+            '$match':
+            {
+                '_id':
+                {
+                    '$lt': 1950
+                }
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'persons':
+                {
+                    '$addToSet': '$persons'
+                }
+            }
+        },
+    ]
+    start = time()
+    persons = [*birth_year.aggregate(birth_year_aggregate)][0]['persons']
+    
+    birth_year.delete_many({'_id': {'$lt': 1950}})
+
+    name_basics.bulk_write(
+        [
+            DeleteOne({'_id': person})
+            for person in persons
+        ]
+    )
+
+    finish = time()
+
+    # pprint(persons)
+    print(len(persons))
+
+    return start, finish
+
 if __name__ == '__main__':
-    print(insert_1000_movies())
+    # title_basics.delete_many({})
+    # start_year.delete_many({})
+
+
+    # start_year.insert_many(
+    #     {
+    #         '_id': y,
+    #         'movies': []
+    #     }
+    #     for y in range(1890, 2030)
+    # )
+
+    # print(insert_1000_movies())
+    remove_before_1950_actors()
