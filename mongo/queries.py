@@ -144,10 +144,19 @@ def remove_before_1950_actors():
 
     finish = time()
 
-    # pprint(persons)
-    print(len(persons))
+    return start, finish
+
+def find_1000_actors_by_pk():
+    pks = [person['_id'] for person in name_basics.find(limit=1000)]
+
+    start = time()
+    x = [*name_basics.find({'_id': {'$in': pks}})]
+    finish = time()
 
     return start, finish
+
+def find_actors_between_1940_1990_starting_with_d():
+    pass
 
 if __name__ == '__main__':
     # title_basics.delete_many({})
@@ -163,4 +172,5 @@ if __name__ == '__main__':
     # )
 
     # print(insert_1000_movies())
-    remove_before_1950_actors()
+    # print(remove_before_1950_actors())
+    print(find_1000_actors_by_pk())
