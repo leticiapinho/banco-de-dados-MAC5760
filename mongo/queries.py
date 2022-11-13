@@ -156,7 +156,68 @@ def find_1000_actors_by_pk():
     return start, finish
 
 def find_actors_between_1940_1990_starting_with_d():
-    pass
+    birth_year_aggregate = [
+        {
+            '$match':
+            {
+                '_id':
+                {
+                    '$gt': 1940,
+                    '$lt': 1990
+                }
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'persons':
+                {
+                    '$addToSet': '$persons'
+                }
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': 'name_basics',
+                'localField': 'persons',
+                'foreignField': '_id',
+                'as': 'persons'
+            }
+        },
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+        {
+            '$match':
+            {
+                'persons.primary_name':
+                {
+                    '$regex': '^[Dd]'
+                }
+            }
+        }
+        
+    ]
+    
+    a = time()
+    persons = [*birth_year.aggregate(birth_year_aggregate)]
+    b = time()
+
+    return a, b
+
 
 if __name__ == '__main__':
     # title_basics.delete_many({})
@@ -173,4 +234,5 @@ if __name__ == '__main__':
 
     # print(insert_1000_movies())
     # print(remove_before_1950_actors())
-    print(find_1000_actors_by_pk())
+    # print(find_1000_actors_by_pk())
+    print(find_actors_between_1940_1990_starting_with_d())
