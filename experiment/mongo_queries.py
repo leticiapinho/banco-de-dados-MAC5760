@@ -123,10 +123,55 @@ def remove_before_1950_actors():
                 }
             }
         },
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': 'name_basics',
+                'localField': 'persons',
+                'foreignField': '_id',
+                'as': 'persons'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons.primary_profession'
+            }
+        },
+
+        {
+            '$match':
+            {
+                'persons.primary_profession':
+                {
+                    '$in': ['actor', 'actress']
+                }
+            }
+        },
+
+        {
+            '$project':
+            {
+                '_id': '$persons._id'
+            }
+        }
     ]
     start = time()
-    persons = [*birth_year.aggregate(birth_year_aggregate)][0]['persons']
-
+    persons = [person['_id'] for person in birth_year.aggregate(birth_year_aggregate)]
     birth_year.delete_many({'_id': {'$lt': 1950}})
 
     payload = [
@@ -135,7 +180,6 @@ def remove_before_1950_actors():
     ]
 
     name_basics.bulk_write(payload)
-
     finish = time()
 
     return start, finish
@@ -462,9 +506,9 @@ if __name__ == '__main__':
     # )
 
     # print(insert_1000_movies())
-    # print(remove_before_1950_actors())
+    print(remove_before_1950_actors())
 
-    print(change_birth())
+    # print(change_birth())
 
 
     # print(find_1000_actors_by_pk())
