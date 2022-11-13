@@ -3,7 +3,7 @@
 from pymongo import MongoClient, UpdateOne, DeleteOne
 from time import time
 from random import seed, randint, sample
-from itertools import permutations
+from itertools import permutations, takewhile
 from pprint import pprint
 
 MONGO_HOST = 'localhost'
@@ -52,6 +52,8 @@ genres = [
 seed(2)
 
 def insert_1000_movies():
+    count = 1000
+
     payload_title_basics = [
         {
             '_id': f'_tt{i}',
@@ -59,13 +61,13 @@ def insert_1000_movies():
             'primary_title': ''.join(title),
             'original_title': ''.join(title),
             'is_adult': False,
-            'start_year': randint(1890, 2022),
+            'start_year': randint(1990, 2022),
             'end_year': 2022,
             'runtime_minutes': 120,
             'genres': ', '.join(sample(genres, randint(1, 5))),
             'principals': []
         }
-        for i, title in enumerate(permutations('abcdefgh'))
+        for i, title in takewhile(lambda t: t[0] < 1000, enumerate(permutations('abcdefgh')))
     ]
 
     start_years_lists = dict()
@@ -84,14 +86,6 @@ def insert_1000_movies():
         )
         for year, movies in start_years_lists.items()
     ]
-
-    start_year.bulk_write(payload_start_year)
-
-    for year, movies in start_years_lists.items():
-        start_year.update_one(
-            {'_id': year},
-            {'$push': {'movies': {'$each': movies}}}
-        )
 
     start = time()
     title_basics.insert_many(payload_title_basics)
@@ -135,12 +129,12 @@ def remove_before_1950_actors():
 
     birth_year.delete_many({'_id': {'$lt': 1950}})
 
-    name_basics.bulk_write(
-        [
-            DeleteOne({'_id': person})
-            for person in persons
-        ]
-    )
+    payload = [
+        DeleteOne({'_id': person})
+        for person in persons
+    ]
+
+    name_basics.bulk_write(payload)
 
     finish = time()
 
@@ -149,8 +143,10 @@ def remove_before_1950_actors():
 def find_1000_actors_by_pk():
     pks = [person['_id'] for person in name_basics.find(limit=1000)]
 
+    payload = {'_id': {'$in': pks}}
+
     start = time()
-    x = [*name_basics.find({'_id': {'$in': pks}})]
+    x = [*name_basics.find(payload)]
     finish = time()
 
     return start, finish
@@ -391,11 +387,11 @@ if __name__ == '__main__':
     #     for y in range(1890, 2030)
     # )
 
-    # print(insert_1000_movies())
+    print(insert_1000_movies())
     # print(remove_before_1950_actors())
 
 
     # print(find_1000_actors_by_pk())
     # print(find_actors_between_1940_1990_starting_with_d())
-    print(tom_hanks_tom_cruise())
+    # print(tom_hanks_tom_cruise())
     # print(marlon_brando())
