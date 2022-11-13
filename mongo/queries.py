@@ -219,7 +219,81 @@ def find_actors_between_1940_1990_starting_with_d():
     return a, b
 
 def tom_hanks_tom_cruise():
-    pass
+    payload = [
+        {
+            '$match':
+            {
+                'primary_name':
+                {
+                    '$in': ['Tom Cruise', 'Tom Hanks']
+                }
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$known_for_titles'
+            }
+        },
+
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'known_for_titles':
+                {
+                    '$addToSet': '$known_for_titles'
+                }
+            }
+        },
+
+        {
+            '$lookup':
+            {
+                'from': 'title_basics',
+                'localField': 'known_for_titles',
+                'foreignField': '_id',
+                'as': 'movies'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$movies'
+            }
+        },
+
+        {
+            '$match':
+            {
+                'movies.start_year':
+                {
+                    '$gt': 1990,
+                    '$lt': 2015
+                }
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'ratings':
+                {
+                    '$addToSet': '$movies.ratings.averate_rating'
+                }
+            }
+        },
+        ]
+
+    start = time()
+    ratings = [*name_basics.aggregate(payload)]
+    finish = time()
+
+    return start, finish
 
 def marlon_brando():
     payload = [
@@ -321,6 +395,7 @@ if __name__ == '__main__':
     # print(remove_before_1950_actors())
 
 
-    print(find_1000_actors_by_pk())
-    print(find_actors_between_1940_1990_starting_with_d())
-    print(marlon_brando())
+    # print(find_1000_actors_by_pk())
+    # print(find_actors_between_1940_1990_starting_with_d())
+    print(tom_hanks_tom_cruise())
+    # print(marlon_brando())
