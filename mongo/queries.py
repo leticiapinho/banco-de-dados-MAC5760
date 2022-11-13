@@ -68,30 +68,30 @@ def insert_1000_movies():
         for i, title in enumerate(permutations('abcdefgh'))
     ]
 
-    start_years_lists = dict()                                   
-                                                                 
-    for title in payload_title_basics:                           
-        year = title['start_year']                               
-        tconst = title['_id']                                    
-                                                                 
+    start_years_lists = dict()
+
+    for title in payload_title_basics:
+        year = title['start_year']
+        tconst = title['_id']
+
         start_years_lists[year] = start_years_lists.get(year, [])
-        start_years_lists[year].append(tconst)                   
-                                                                 
-    payload_start_year = [                                       
-        UpdateOne(                                               
-            {'_id': year},                                       
-            {'$push': {'movies': {'$each': movies}}}             
-        )                                                        
-        for year, movies in start_years_lists.items()            
-    ]                                                            
-                                                                 
-    start_year.bulk_write(payload_start_year)                    
-                                                                 
-    for year, movies in start_years_lists.items():               
-        start_year.update_one(                                   
-            {'_id': year},                                       
-            {'$push': {'movies': {'$each': movies}}}             
-        )                                                        
+        start_years_lists[year].append(tconst)
+
+    payload_start_year = [
+        UpdateOne(
+            {'_id': year},
+            {'$push': {'movies': {'$each': movies}}}
+        )
+        for year, movies in start_years_lists.items()
+    ]
+
+    start_year.bulk_write(payload_start_year)
+
+    for year, movies in start_years_lists.items():
+        start_year.update_one(
+            {'_id': year},
+            {'$push': {'movies': {'$each': movies}}}
+        )
 
     start = time()
     title_basics.insert_many(payload_title_basics)
@@ -132,7 +132,7 @@ def remove_before_1950_actors():
     ]
     start = time()
     persons = [*birth_year.aggregate(birth_year_aggregate)][0]['persons']
-    
+
     birth_year.delete_many({'_id': {'$lt': 1950}})
 
     name_basics.bulk_write(
@@ -209,15 +209,100 @@ def find_actors_between_1940_1990_starting_with_d():
                 }
             }
         }
-        
+
     ]
-    
+
     a = time()
     persons = [*birth_year.aggregate(birth_year_aggregate)]
     b = time()
 
     return a, b
 
+def tom_hanks_tom_cruise():
+    pass
+
+def marlon_brando():
+    payload = [
+        {
+            '$match':
+            {
+                'primary_name':
+                {
+                    '$eq': 'Marlon Brando'
+                }
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$known_for_titles'
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'known_for_titles':
+                {
+                    '$addToSet': '$known_for_titles'
+                }
+            }
+        },
+
+        {
+            '$lookup':
+            {
+                'from': 'title_basics',
+                'localField': 'known_for_titles',
+                'foreignField': '_id',
+                'as': 'movies'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$movies'
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'ratings':
+                {
+                    '$addToSet': '$movies.ratings'
+                }
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$ratings'
+            }
+        },
+
+        {
+            '$group':
+            {
+                '_id': None,
+                'avg':
+                {
+                    '$avg': '$ratings.averate_rating'
+                }
+            }
+        }
+    ]
+
+    start = time()
+    x = [*name_basics.aggregate(payload)]
+    finish = time()
+
+    return start, finish
 
 if __name__ == '__main__':
     # title_basics.delete_many({})
@@ -234,5 +319,8 @@ if __name__ == '__main__':
 
     # print(insert_1000_movies())
     # print(remove_before_1950_actors())
-    # print(find_1000_actors_by_pk())
+
+
+    print(find_1000_actors_by_pk())
     print(find_actors_between_1940_1990_starting_with_d())
+    print(marlon_brando())
