@@ -93,3 +93,13 @@ def marlon_brando():
 
   return start, end
 
+def change_birth():
+  sql_command = "UPDATE namebasics SET birthYear = '2030' WHERE birthYear = '1961'"
+
+  start = time()
+  cursor.execute(sql_command)
+  results = cursor.fetchall()
+  end = time()
+
+  return start, end
+
