@@ -8,18 +8,18 @@ from pprint import pprint
 
 seed(2)
 
-with psycopg2.connect(
-                    user='postgres',
-                    password='postgres',
-                    host='localhost',
-                    port='',
-                    dbname='postgres') as connection:
-  connection.autocommit = True
+connection = psycopg2.connect(
+  user='postgres',
+  password='postgres',
+  host='localhost',
+  port='',
+  dbname='postgres'
+)
+connection.autocommit = True
 
-  with connection.cursor as cursor:
-    pass
+cursor = connection.cursor()
 
-def insert_1000_movies(cursor):
+def insert_1000_movies():
   sql_command = 'INSERT INTO titleBasics (tconst,titleType,primaryTitle,originalTitle,isAdult,startYear,endYear,runtimeMinutes) VALUES '
   values = ''
 
@@ -35,7 +35,7 @@ def insert_1000_movies(cursor):
 
   return start, end
 
-def remove_before_1950_actors(cursor):
+def remove_before_1950_actors():
   sql_command = 'DELETE FROM nameBasics WHERE birthYear < "1950";'
 
   start = time()
@@ -45,7 +45,7 @@ def remove_before_1950_actors(cursor):
 
   return start, end
 
-def find_1000_actors_by_pk(cursor):
+def find_1000_actors_by_pk():
   cursor.execute('SELECT nconst FROM nameBasics;')
   a = cursor.fetchall()
   b = random.sample(b, 1000)
@@ -60,7 +60,7 @@ def find_1000_actors_by_pk(cursor):
 
   return start, end
 
-def find_actors_between_1940_1990_starting_with_d(cursor):
+def find_actors_between_1940_1990_starting_with_d():
   sql_command = 'SELECT * FROM nameBasics '
   sql_command += 'WHERE (birthYear >= "1940" AND birthYear <= "1990" AND (primaryName LIKE "D%" OR primaryName LIKE "d%"));'
 
@@ -71,7 +71,7 @@ def find_actors_between_1940_1990_starting_with_d(cursor):
 
   return start, end
 
-def tom_hanks_tom_cruise(cursor):
+def tom_hanks_tom_cruise():
   sql_command = "SELECT DISTINCT averageRating, primaryTitle "
   sql_command += "FROM (titleRatings NATURAL JOIN titleBasics NATURAL JOIN knownForTitles NATURAL JOIN nameBasics) "
   sql_command += "WHERE startYear >= '1960' AND startYear <= '2015' AND (primaryName LIKE 'Tom Hanks' OR primaryName LIKE 'Tom Cruise');"
@@ -83,7 +83,7 @@ def tom_hanks_tom_cruise(cursor):
 
   return start, end
 
-def marlon_brando(cursor):
+def marlon_brando():
   sql_command = "SELECT avg(averageRating) FROM (titleRatings NATURAL JOIN knownForTitles NATURAL JOIN nameBasics) WHERE primaryName LIKE 'Marlon Brando';"
 
   start = time()
@@ -92,3 +92,4 @@ def marlon_brando(cursor):
   end = time()
 
   return start, end
+
