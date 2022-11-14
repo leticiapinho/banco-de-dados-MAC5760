@@ -30,16 +30,20 @@ def insert_1000_movies():
 
   start = time()
   cursor.execute(sql_command)
-  results = cursor.fetchall()
   end = time()
 
   return start, end
 
 def remove_before_1950_actors():
-  sql_command = "DELETE FROM nameBasics WHERE birthYear < '1950';"
+  sql_commands = [
+  "DELETE FROM primaryProfession WHERE nconst in (SELECT nconst FROM nameBasics WHERE birthYear < '1950');"
+  "DELETE FROM titlePrincipals WHERE nconst in (SELECT nconst FROM nameBasics WHERE birthYear < '1950');"
+  "DELETE FROM FROM nameBasics WHERE birthYear < '1950';"
+  ]
 
   start = time()
-  cursor.execute(sql_command)
+  for sql_command in sql_commands:
+    cursor.execute(sql_command)
   results = cursor.fecthall()
   end = time()
 
