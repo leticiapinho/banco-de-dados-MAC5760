@@ -13,3 +13,4 @@ CREATE TABLE IF NOT EXISTS nameBasics
 
 ALTER TABLE nameBasics DROP COLUMN primaryProfession;
 ALTER TABLE nameBasics DROP COLUMN knownForTitles;
+ALTER TABLE namebasics ALTER COLUMN birthyear TYPE integer USING (birthyear::integer);
