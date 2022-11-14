@@ -35,15 +35,10 @@ def insert_1000_movies():
   return start, end
 
 def remove_before_1950_actors():
-  sql_commands = [
-  "DELETE FROM primaryProfession WHERE nconst in (SELECT nconst FROM nameBasics WHERE birthYear < '1950');"
-  "DELETE FROM titlePrincipals WHERE nconst in (SELECT nconst FROM nameBasics WHERE birthYear < '1950');"
-  "DELETE FROM FROM nameBasics WHERE birthYear < '1950';"
-  ]
+  sql_command = "DELETE FROM nameBasics WHERE birthYear < 1950;"
 
   start = time()
-  for sql_command in sql_commands:
-    cursor.execute(sql_command)
+  cursor.execute(sql_command)
   results = cursor.fecthall()
   end = time()
 
@@ -65,7 +60,7 @@ def find_1000_actors_by_pk():
 
 def find_actors_between_1940_1990_starting_with_d():
   sql_command = 'SELECT * FROM nameBasics '
-  sql_command += "WHERE (birthYear >= '1940' AND birthYear <= '1990' AND (primaryName LIKE 'D%' OR primaryName LIKE 'd%'))"
+  sql_command += "WHERE (birthYear >= 1940 AND birthYear <= 1990 AND (primaryName LIKE 'D%' OR primaryName LIKE 'd%'))"
 
   start = time()
   cursor.execute(sql_command)
@@ -97,7 +92,7 @@ def marlon_brando():
   return start, end
 
 def change_birth():
-  sql_command = "UPDATE namebasics SET birthYear = '2030' WHERE birthYear = '1961'"
+  sql_command = "UPDATE namebasics SET birthYear = 2030 WHERE birthYear = 1961"
 
   start = time()
   cursor.execute(sql_command)
