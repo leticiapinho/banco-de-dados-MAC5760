@@ -29,26 +29,25 @@ def insert_1000_movies():
   sql_command += values[:-1] + ';'
 
   start = time()
-  cusor.execute(sql_command)
-  results = cursor.fecthall()
+  cursor.execute(sql_command)
+  results = cursor.fetchall()
   end = time()
 
   return start, end
 
 def remove_before_1950_actors():
-  sql_command = 'DELETE FROM nameBasics WHERE birthYear < "1950";'
+  sql_command = "DELETE FROM nameBasics WHERE birthYear < '1950';"
 
   start = time()
-  cusor.execute(sql_command)
+  cursor.execute(sql_command)
   results = cursor.fecthall()
   end = time()
 
   return start, end
 
 def find_1000_actors_by_pk():
-  cursor.execute('SELECT nconst FROM nameBasics;')
-  a = cursor.fetchall()
-  b = random.sample(b, 1000)
+  cursor.execute('SELECT nconst FROM nameBasics ORDER BY random() LIMIT 1000;')
+  b = cursor.fetchall()
   c = str(list(map(lambda v: v[0], b))).replace('[', '(').replace(']', ')')
 
   sql_command = f'SELECT * FROM nameBasics WHERE nconst IN {c};'
@@ -62,7 +61,7 @@ def find_1000_actors_by_pk():
 
 def find_actors_between_1940_1990_starting_with_d():
   sql_command = 'SELECT * FROM nameBasics '
-  sql_command += 'WHERE (birthYear >= "1940" AND birthYear <= "1990" AND (primaryName LIKE "D%" OR primaryName LIKE "d%"));'
+  sql_command += "WHERE (birthYear >= '1940' AND birthYear <= '1990' AND (primaryName LIKE 'D%' OR primaryName LIKE 'd%'))"
 
   start = time()
   cursor.execute(sql_command)
