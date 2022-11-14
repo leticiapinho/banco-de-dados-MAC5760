@@ -96,7 +96,6 @@ def change_birth():
 
   start = time()
   cursor.execute(sql_command)
-  results = cursor.fetchall()
   end = time()
 
   return start, end

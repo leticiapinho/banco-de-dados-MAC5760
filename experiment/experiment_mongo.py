@@ -5,7 +5,7 @@ from time import sleep
 
 queries = [
     mongo_queries.insert_1000_movies,
-    mongo_queries.remove_before_1950_actors,
+    # mongo_queries.remove_before_1950_actors,
     mongo_queries.change_birth,
     mongo_queries.find_1000_actors_by_pk,
     mongo_queries.find_actors_between_1940_1990_starting_with_d,
