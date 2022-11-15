@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS titlePrincipals
 	category varchar,
         job varchar,
         characters varchar,
-	FOREIGN KEY (nconst) REFERENCES nameBasics(nconst)
+	FOREIGN KEY (nconst) REFERENCES nameBasics(nconst) ON DELETE CASCADE
 );
 
 \copy titlePrincipals (tconst, ordering, nconst, category, job, characters) FROM 'SQL_FILE' DELIMITER E'|' CSV HEADER;

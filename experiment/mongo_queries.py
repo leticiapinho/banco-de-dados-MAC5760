@@ -49,9 +49,9 @@ genres = [
     'Reality-TV'
 ]
 
-seed(2)
-
 def insert_1000_movies():
+    seed(2)
+
     count = 1000
 
     payload_title_basics = [
@@ -123,10 +123,55 @@ def remove_before_1950_actors():
                 }
             }
         },
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': 'name_basics',
+                'localField': 'persons',
+                'foreignField': '_id',
+                'as': 'persons'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons.primary_profession'
+            }
+        },
+
+        {
+            '$match':
+            {
+                'persons.primary_profession':
+                {
+                    '$in': ['actor', 'actress']
+                }
+            }
+        },
+
+        {
+            '$project':
+            {
+                '_id': '$persons._id'
+            }
+        }
     ]
     start = time()
-    persons = [*birth_year.aggregate(birth_year_aggregate)][0]['persons']
-
+    persons = [person['_id'] for person in birth_year.aggregate(birth_year_aggregate)]
     birth_year.delete_many({'_id': {'$lt': 1950}})
 
     payload = [
@@ -135,7 +180,6 @@ def remove_before_1950_actors():
     ]
 
     name_basics.bulk_write(payload)
-
     finish = time()
 
     return start, finish
@@ -374,6 +418,80 @@ def marlon_brando():
 
     return start, finish
 
+def change_birth():
+    payload_aggregate = [
+        {
+            '$match':
+            {
+                '_id':
+                {
+                    '$eq': 1961
+                }
+            }
+        },
+        {
+            '$unwind':
+            {
+                'path': '$persons'
+            }
+        },
+        {
+            '$lookup':
+            {
+                'from': 'name_basics',
+                'localField': 'persons',
+                'foreignField': '_id',
+                'as': 'persons'
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons',
+            }
+        },
+
+        {
+            '$unwind':
+            {
+                'path': '$persons.primary_profession'
+            }
+        },
+
+        {
+            '$match':
+            {
+                'persons.primary_profession':
+                {
+                    '$in': ['actor', 'actress']
+                }
+            }
+        },
+
+        {
+            '$project':
+            {
+                '_id': '$persons._id'
+            }
+        }
+    ]
+
+    start = time()
+    actors = birth_year.aggregate(payload_aggregate)
+    actors_payload = [
+        UpdateOne( 
+            {'_id': actor['_id']},
+            {'$set': {'birth_year': 2030}}
+        )
+
+        for actor in actors
+    ]
+    name_basics.bulk_write(actors_payload)
+    birth_year.update_one({'_id': 1961}, {'$set': {'persons': []}})
+    finish = time()
+    return start, finish
+
 if __name__ == '__main__':
     # title_basics.delete_many({})
     # start_year.delete_many({})
@@ -387,8 +505,10 @@ if __name__ == '__main__':
     #     for y in range(1890, 2030)
     # )
 
-    print(insert_1000_movies())
-    # print(remove_before_1950_actors())
+    # print(insert_1000_movies())
+    print(remove_before_1950_actors())
+
+    # print(change_birth())
 
 
     # print(find_1000_actors_by_pk())
