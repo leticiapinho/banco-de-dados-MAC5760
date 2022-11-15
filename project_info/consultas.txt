@@ -1,0 +1,31 @@
+
+Para a etapa dos experimentos foi definido o seguinte conjunto de operações:
+
+CONSULTAS
+
+- Inserção: inserir filmes sem atores (aprox. 1000)  
+- Remoçao: remove todos os atores que nasceram antes de 1950 
+- Alteração: mudar a data de nascimento de todos os atores que nasceram em 1961 
+- Buscar por PK: busca 1000 atores pela chave primaria (nm) 
+- Buscar por não chave (seleção composta): buscar atores nasceram entre 1940 e 1990 e cujo nome começa com D 
+- Consulta junção de junção: nota dos filmes (está na tab title ratings) dos atores Tom Hanks e Tom Cruise ( está na tabela nameBasics ) no range de datas de lançamento dos filmes (titleNasics) entre 1990 e 2015. 
+- Busca com agrupamento: média das nota dos filme cujo ator Marlon Brandom participou
+
+As consultas também devem ser realizadas em cenários utilizando índices Arvore B+ e Hash, em 2 atributos diferentes. A proposta do projeto é prosseguir com os seguintes cenários:
+
+- CENARIO 2 (índice Arvore B+):  Colocar índice no nome dos atores 
+- CENARIO 3 (índice Arbore B+): Colocar índice na nota do filme 
+- CENARIO 4 (índice hash): Colocar índice no nome dos atores 
+- CENARIO 5 (índice hash): Colocar índice na nota do filme
+
+EAlém dos cenários acima, são realizados cálculos para as seguintes métricas:
+
+METRICAS
+
+- Tempo médio +SD ou intervalo confiança 
+- Tempo de execução (gráfico linha tempo eixo y vs num execução eixo X ou bloxpot) (no python usando time e loop pra medir de cada uma das 20 consultas pra cada operação) 
+- Uso espaço disco 
+- Uso RAM 
+- Ocupação CPU 
+- Leitura em disco (bytes/s) 
+- Escrita em disco (b/s)
