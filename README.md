@@ -68,3 +68,5 @@ A partir da raiz do repositório, execute:
 1. Para download e limpeza de dados: `./fetch_tsv.sh`
 2. Para população do banco relacional: `./populate_postgres.sh`
 3. Para população do banco NoSQL: `./populate_mongo.sh`
+4. Para consultas no Postgres: './experiment/experiment_postgres.py'
+5. Para consultas no MongoDB: './experiment/experiment_mongodb.py'
